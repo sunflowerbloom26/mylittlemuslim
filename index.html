@@ -16,6 +16,41 @@
     .current-day { border: 3px solid #fbbf24; box-shadow: 0 0 15px rgba(251, 191, 36, 0.6); }
     .locked { filter: grayscale(0.7); opacity: 0.5; cursor: not-allowed; }
     .modal-backdrop { backdrop-filter: blur(8px); }
+
+    /* Styling untuk hilangkan scroll bar tapi tetap boleh scroll */
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100dvh; /* Dynamic height untuk phone */
+  overflow: hidden; /* Sembunyikan scroll bar utama */
+}
+
+#app-container {
+  height: 100%;
+  overflow-y: auto; /* Benarkan scroll di dalam container */
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
+#app-container::-webkit-scrollbar {
+  display: none; /* Sembunyi terus untuk Chrome, Safari & Opera */
+}
+
+/* Tambahan styling untuk butang muzik */
+.music-btn {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  background: rgba(30, 27, 75, 0.8);
+  border: 1px solid #fbbf24;
+  padding: 12px;
+  border-radius: 50%;
+  z-index: 100;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  transition: all 0.3s ease;
+}
+.music-btn:hover { transform: scale(1.1); }
   </style>
  </head>
  <body class="h-full font-main text-white" style="background: linear-gradient(135deg, #1e1b4b 0%, #312e81 100%);">
@@ -83,6 +118,27 @@
   </div>
 
   <script>
+
+    function toggleMusic() {
+    const music = document.getElementById('bgMusic');
+    const icon = document.getElementById('musicIcon');
+    
+    if (music.paused) {
+        music.play();
+        icon.innerText = '🔊';
+        document.getElementById('musicBtn').style.borderColor = '#fbbf24';
+    } else {
+        music.pause();
+        icon.innerText = '🔇';
+        document.getElementById('musicBtn').style.borderColor = '#4b5563';
+    }
+}
+
+// Tambahan: Muzik akan mula bila user klik mana-mana (sebab browser block autoplay)
+document.addEventListener('click', function() {
+    const music = document.getElementById('bgMusic');
+}, { once: true });
+
     // Audio Context for Sound Effects
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playSound(type) {
@@ -231,5 +287,12 @@
 
     render();
   </script>
+  <audio id="bgMusic" loop>
+  <source src="lagu-ramadan.mp3" type="audio/mpeg">
+</audio>
+
+<button onclick="toggleMusic()" class="music-btn" id="musicBtn">
+  <span id="musicIcon" style="font-size: 20px;">🔇</span>
+</button>
  </body>
 </html>
